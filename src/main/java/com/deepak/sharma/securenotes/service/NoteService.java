@@ -1,9 +1,11 @@
 package com.deepak.sharma.securenotes.service;
 
 import com.deepak.sharma.securenotes.model.Note;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface NoteService {
     Note createNoteForUser(String username, String noteContent);
     Note updateNoteForUser(String username, Long noteId, String noteContent);
