@@ -28,5 +28,10 @@ public class Role {
     @Column(length = 20, name = "role_name")
     AppRole roleName;
 
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     Set<User> users;
+
+    public Role(AppRole roleName) {
+        this.roleName = roleName;
+    }
 }
