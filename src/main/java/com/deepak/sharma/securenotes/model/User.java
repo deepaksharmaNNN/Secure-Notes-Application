@@ -68,4 +68,9 @@ public class User {
     LocalDateTime updatedAt;
 
 
+    public User(String username, String mail, String password) {
+        this.username = username;
+        this.email = mail;
+        this.password = password;
+    }
 }
