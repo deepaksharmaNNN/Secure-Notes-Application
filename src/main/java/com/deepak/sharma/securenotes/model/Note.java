@@ -1,9 +1,6 @@
 package com.deepak.sharma.securenotes.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +8,8 @@ import lombok.experimental.FieldDefaults;
 
 @Getter
 @Setter
-
+@Entity
+@Table(name = "notes")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Note {
 

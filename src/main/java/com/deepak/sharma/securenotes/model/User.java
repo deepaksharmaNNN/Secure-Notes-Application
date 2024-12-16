@@ -10,15 +10,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 @Table(name = "users",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "username"),
@@ -29,7 +29,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer userId;
+    Long userId;
 
     @NotBlank
     @Size(max = 20)
@@ -46,8 +46,20 @@ public class User implements UserDetails {
     @Column(name = "password", length = 120)
     String password;
 
+    boolean accountNonExpired;
+    boolean accountNonLocked;
+    boolean credentialsNonExpired;
+    boolean enabled = true;
+
+    LocalDate accountExpiryDate;
+    LocalDate credentialExpiryDate;
+
+    String twoFactorSecret;
+    boolean isTwoFactorEnabled;
+    String signUpMethod;
+
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE})
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "role_id", referencedColumnName = "roleId")
     Role role;
 
     @CreationTimestamp
@@ -59,9 +71,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Arrays.stream(role.getRoleName().name().split(","))
-                .map(r -> (GrantedAuthority) () -> r)
-                .toList();
+        return null;
     }
 
     @Override

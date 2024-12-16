@@ -16,6 +16,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @Getter
 @Setter
+@Entity
 @Table(name = "roles")
 @FieldDefaults(level = PRIVATE)
 public class Role {
