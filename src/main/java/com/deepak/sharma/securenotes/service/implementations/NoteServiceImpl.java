@@ -1,8 +1,8 @@
-package com.deepak.sharma.securenotes.service.impl;
+package com.deepak.sharma.securenotes.service.implementations;
 
 import com.deepak.sharma.securenotes.model.Note;
 import com.deepak.sharma.securenotes.repository.NoteRepository;
-import com.deepak.sharma.securenotes.service.NoteService;
+import com.deepak.sharma.securenotes.service.interfaces.NoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

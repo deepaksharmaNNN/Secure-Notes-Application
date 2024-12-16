@@ -1,4 +1,4 @@
-package com.deepak.sharma.securenotes.config;
+package com.deepak.sharma.securenotes.security.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

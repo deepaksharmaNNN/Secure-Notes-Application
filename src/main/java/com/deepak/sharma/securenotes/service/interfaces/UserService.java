@@ -1,4 +1,4 @@
-package com.deepak.sharma.securenotes.service;
+package com.deepak.sharma.securenotes.service.interfaces;
 
 import org.springframework.stereotype.Service;
 
