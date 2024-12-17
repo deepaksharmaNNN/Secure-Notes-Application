@@ -1,6 +1,7 @@
 package com.deepak.sharma.securenotes.model;
 
 import com.deepak.sharma.securenotes.enums.AppRole;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Role {
     AppRole roleName;
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonBackReference
     Set<User> users;
 
     public Role(AppRole roleName) {

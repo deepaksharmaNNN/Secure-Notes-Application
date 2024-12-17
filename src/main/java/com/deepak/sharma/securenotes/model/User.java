@@ -1,5 +1,6 @@
 package com.deepak.sharma.securenotes.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -58,6 +59,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = { CascadeType.MERGE})
     @JoinColumn(name = "role_id", referencedColumnName = "roleId")
+    @JsonManagedReference
     Role role;
 
     @CreationTimestamp
