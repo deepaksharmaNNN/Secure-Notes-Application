@@ -6,6 +6,7 @@ import com.deepak.sharma.securenotes.service.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,17 +21,20 @@ public class AdminController {
     // Add admin specific APIs here
 
     //Get all Users
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/users") // http://localhost:8080/api/admin/users
     public ResponseEntity<List<UserDTO>> getAllUsers(){
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
     //Update Role
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/updateRole") // http://localhost:8080/api/admin/updateRole?userId=1&roleName=ROLE_ADMIN
     public ResponseEntity<String> updateRole(@RequestParam Long userId, @RequestParam String roleName){
         String message = userService.updateRole(userId, roleName);
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
-    //Get User Details by Id
+    //Get User Details by id
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/user/{userId}") // http://localhost:8080/api/admin/user/1
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId){
         return new ResponseEntity<>(userService.getUserById(userId), HttpStatus.OK);

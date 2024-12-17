@@ -8,27 +8,37 @@ import com.deepak.sharma.securenotes.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.time.LocalDate;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers("/**").authenticated()
-                                .anyRequest().authenticated()
-                )
-                .httpBasic(Customizer.withDefaults());
-        return httpSecurity.build();
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Allow only ROLE_ADMIN to access /api/admin/**
+                        .anyRequest().authenticated()) // All other requests must be authenticated
+                .httpBasic(withDefaults()); // Use basic authentication (you can switch to form-based if needed)
+        return http.build();
     }
+
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.debug(true);
+//    }
+
     @Bean
     public CommandLineRunner initData(RoleRepository roleRepository, UserRepository userRepository) {
         return args -> {
@@ -38,6 +48,7 @@ public class SecurityConfig {
             Role adminRole = roleRepository.findByRoleName(AppRole.ROLE_ADMIN)
                     .orElseGet(() -> roleRepository.save(new Role(AppRole.ROLE_ADMIN)));
 
+            // Check if the users exist, otherwise create them
             if (userRepository.findByUsername("user1").isEmpty()) {
                 User user1 = new User("user1", "user1@example.com", "{noop}password1");
                 user1.setAccountNonLocked(false);
