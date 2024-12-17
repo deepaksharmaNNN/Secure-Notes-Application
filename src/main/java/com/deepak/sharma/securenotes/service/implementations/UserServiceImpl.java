@@ -33,13 +33,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateRole(Long userId, String roleName) {
+    public String updateRole(Long userId, String roleName) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         AppRole role = AppRole.valueOf(roleName);
         Role newRole = roleRepository.findByRoleName(role).orElseThrow(() -> new RuntimeException("Role not found"));
+        if (user.getRole().getRoleName().equals(AppRole.ROLE_ADMIN)) {
+            return "Current user already has " + newRole.getRoleName() + " role";
+        }
         user.setRole(newRole);
         userRepository.save(user);
 
+        return "Role updated successfully";
     }
 
     @Override

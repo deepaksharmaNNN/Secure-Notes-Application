@@ -25,10 +25,10 @@ public class AdminController {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
     //Update Role
-    @PutMapping("/updateRole") // http://localhost:8080/api/admin/updateRole?userId=1&roleName=ADMIN
+    @PutMapping("/updateRole") // http://localhost:8080/api/admin/updateRole?userId=1&roleName=ROLE_ADMIN
     public ResponseEntity<String> updateRole(@RequestParam Long userId, @RequestParam String roleName){
-        userService.updateRole(userId, roleName);
-        return new ResponseEntity<>("Role Updated Successfully", HttpStatus.OK);
+        String message = userService.updateRole(userId, roleName);
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
     //Get User Details by Id
     @GetMapping("/user/{userId}") // http://localhost:8080/api/admin/user/1
