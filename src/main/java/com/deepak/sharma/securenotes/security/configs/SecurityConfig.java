@@ -13,6 +13,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.time.LocalDate;
@@ -33,6 +35,10 @@ public class SecurityConfig {
                 .httpBasic(withDefaults()); // Use basic authentication (you can switch to form-based if needed)
         return http.build();
     }
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
 //    @Bean
 //    public WebSecurityCustomizer webSecurityCustomizer() {
@@ -40,7 +46,7 @@ public class SecurityConfig {
 //    }
 
     @Bean
-    public CommandLineRunner initData(RoleRepository roleRepository, UserRepository userRepository) {
+    public CommandLineRunner initData(RoleRepository roleRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             Role userRole = roleRepository.findByRoleName(AppRole.ROLE_USER)
                     .orElseGet(() -> roleRepository.save(new Role(AppRole.ROLE_USER)));
@@ -50,7 +56,8 @@ public class SecurityConfig {
 
             // Check if the users exist, otherwise create them
             if (userRepository.findByUsername("user1").isEmpty()) {
-                User user1 = new User("user1", "user1@example.com", "{noop}password1");
+                User user1 = new User("user1", "user1@example.com");
+                user1.setPassword(passwordEncoder.encode("password1"));
                 user1.setAccountNonLocked(false);
                 user1.setAccountNonExpired(true);
                 user1.setCredentialsNonExpired(true);
@@ -64,7 +71,8 @@ public class SecurityConfig {
             }
 
             if (userRepository.findByUsername("admin").isEmpty()) {
-                User admin = new User("admin", "admin@example.com", "{noop}adminPass");
+                User admin = new User("admin", "admin@example.com");
+                admin.setPassword(passwordEncoder.encode("adminPass"));
                 admin.setAccountNonLocked(true);
                 admin.setAccountNonExpired(true);
                 admin.setCredentialsNonExpired(true);
