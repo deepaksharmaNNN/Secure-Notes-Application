@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.time.LocalDate;
 
@@ -26,10 +27,13 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                        .ignoringRequestMatchers("/api/auth/public/**"))
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN") // Allow only ROLE_ADMIN to access /api/admin/**
-                        .anyRequest().authenticated()) // All other requests must be authenticated
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/").fullyAuthenticated()
+                        .anyRequest().authenticated())
+                .formLogin(withDefaults())// Use form-based login
                 .httpBasic(withDefaults()); // Use basic authentication (you can switch to form-based if needed)
         return http.build();
     }
